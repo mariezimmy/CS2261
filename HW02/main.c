@@ -2,7 +2,6 @@
 
 // prototypes
 void initialize();
-void update();
 void draw();
 
 // buttons
@@ -37,7 +36,7 @@ extern int time = 0;
 int main() {
 
 	initialize();
-	drawRect(0, 0, 60, 240, CYAN);
+	drawBricks(2, 1, 12, 10, 5, CYAN);
 
 	while(1) {
 		oldButtons = buttons;

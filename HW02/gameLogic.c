@@ -78,6 +78,21 @@ void updatePaddlePosition() {
     }
 }
 
+void drawBricks(int startRow, int startCol, int bricksPerRow, int brickRows,
+    int brickHeight, u16 color) {
+    int row = startRow;
+    int col = startCol;
+    int brickWidth = (SCREENWIDTH / bricksPerRow) - 2;
+    for (int i = 0; i < brickRows; i++) {
+        for (int j = 0; j < bricksPerRow; j++) {
+            drawRect(row, col, brickHeight, brickWidth, color);
+            col += brickWidth + 2;
+        }
+        col = 1;
+        row += brickHeight + 2;
+    }
+}
+
 void reset() {
     // if the ball fall belows the paddle, reset
     if (ballRow > paddleRow) {
