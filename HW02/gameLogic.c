@@ -2,9 +2,12 @@
 
 // paddle
 int paddleSize;
-int paddleCol;
-int prevPaddleCol;
-int paddleRow;
+int paddleCol_Bottom;
+int prevPaddleCol_Bottom;
+int paddleRow_Bottom;
+int paddleCol_Top;
+int prevPaddleCol_Top;
+int paddleRow_Top;
 int paddleSpeed;
 
 // bricks
@@ -38,9 +41,10 @@ void updateBallPosition(int time) {
             ballCol =  ballCol + 1;
             ballCol_Velocity = -ballCol_Velocity;
         }
-        // if the ball goes out of bounds at the top
-        if (ballRow <= 0) {
-            ballRow = ballRow + 1;
+        // if the ball hits the top paddle
+        if (collision(ballRow, ballCol, ballSize, ballSize, paddleRow_Top,
+            paddleCol_Top, 1, paddleSize)) {
+            ballRow += 1;
             ballRow_Velocity = -ballRow_Velocity;
         }
         // if the ball goes out of bounds to the right
@@ -48,56 +52,68 @@ void updateBallPosition(int time) {
             ballCol -= ballCol + ballSize - 239;
             ballCol_Velocity = -ballCol_Velocity;
         }
-        // if the ball goes out of bounds at the bottom
-        if ((ballRow + ballSize >= paddleRow) &&
-            (ballCol + ballSize >= paddleCol) &&
-            (ballCol < paddleCol + paddleSize)) {
-            ballRow -= ballRow + ballSize - paddleRow - 1;
+        // if the ball hits the bottom paddle
+        if (collision(ballRow, ballCol, ballSize, ballSize, paddleRow_Bottom,
+            paddleCol_Bottom, 1, paddleSize)) {
+            ballRow -= ballRow + ballSize - paddleRow_Bottom - 1;
             ballRow_Velocity = -ballRow_Velocity;
         }
     }
 }
 
-void updatePaddlePosition() {
+void updateBottomPaddlePosition() {
+
     int paddleSpeed = 1;
-    prevPaddleCol = paddleCol;
+    prevPaddleCol_Bottom = paddleCol_Bottom;
 
     if (BUTTON_HELD(BUTTON_LEFT)) {
-        paddleCol -= paddleSpeed;
+        paddleCol_Bottom -= paddleSpeed;
     }
     if (BUTTON_HELD(BUTTON_RIGHT)) {
-        paddleCol += paddleSpeed;
+        paddleCol_Bottom += paddleSpeed;
     }
 
     // if paddle tries to go out of bounds, don't let it
-    if (paddleCol <= 0){
-        paddleCol = 1;
+    if (paddleCol_Bottom <= 0){
+        paddleCol_Bottom = 1;
     }
-    if (paddleCol + paddleSize >= 239) {
-        paddleCol = 239  - paddleSize;
+    if (paddleCol_Bottom + paddleSize >= 239) {
+        paddleCol_Bottom = 239  - paddleSize;
     }
 }
 
-void drawBricks(int startRow, int startCol, int bricksPerRow, int brickRows,
-    int brickHeight, u16 color) {
-    int row = startRow;
-    int col = startCol;
-    int brickWidth = (SCREENWIDTH / bricksPerRow) - 2;
-    for (int i = 0; i < brickRows; i++) {
-        for (int j = 0; j < bricksPerRow; j++) {
-            drawRect(row, col, brickHeight, brickWidth, color);
-            col += brickWidth + 2;
-        }
-        col = 1;
-        row += brickHeight + 2;
+void updateTopPaddlePosition() {
+
+    int paddleSpeed = 1;
+    prevPaddleCol_Top = paddleCol_Top;
+
+    if (BUTTON_HELD(BUTTON_B)) {
+        paddleCol_Top -= paddleSpeed;
+    }
+    if (BUTTON_HELD(BUTTON_A)) {
+        paddleCol_Top += paddleSpeed;
+    }
+
+    // if paddle tries to go out of bounds, don't let it
+    if (paddleCol_Top <= 0){
+        paddleCol_Top = 1;
+    }
+    if (paddleCol_Top + paddleSize >= 239) {
+        paddleCol_Top = 239  - paddleSize;
     }
 }
 
 void reset() {
+
     // if the ball fall belows the paddle, reset
-    if (ballRow > paddleRow) {
+    if (ballRow > paddleRow_Bottom) {
         ballCol = SCREENWIDTH / 2;
         ballRow = SCREENHEIGHT / 2;
+    }
+    if (ballRow < paddleRow_Top - ballSize) {
+        ballCol = SCREENWIDTH / 2;
+        ballRow = SCREENHEIGHT / 2;
+        ballRow_Velocity = -ballRow_Velocity;
     }
 }
 

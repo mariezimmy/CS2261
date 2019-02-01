@@ -10,16 +10,13 @@ u16 oldButtons;
 
 // paddle
 extern int paddleSize;
-extern int paddleCol;
-extern int prevPaddleCol;
-extern int paddleRow;
+extern int paddleCol_Bottom;
+extern int prevPaddleCol_Bottom;
+extern int paddleRow_Bottom;
+extern int paddleCol_Top;
+extern int prevPaddleCol_Top;
+extern int paddleRow_Top;
 extern int paddleSpeed;
-
-// bricks
-int brickRow;
-int brickCol;
-int brickHeight;
-int brickWidth;
 
 // ball
 extern int ballSize;
@@ -36,14 +33,14 @@ extern int time = 0;
 int main() {
 
 	initialize();
-	drawBricks(2, 1, 12, 10, 5, CYAN);
 
 	while(1) {
 		oldButtons = buttons;
 		buttons = BUTTONS;
 
 		updateBallPosition(time);
-		updatePaddlePosition();
+		updateTopPaddlePosition();
+		updateBottomPaddlePosition();
 		reset();
 		waitForVBlank();
 		draw();
@@ -63,16 +60,13 @@ void initialize() {
 
 	// paddle initialization
 	paddleSize = SCREENWIDTH / 4;
-	paddleCol = (SCREENWIDTH - paddleSize) / 2;
-	prevPaddleCol = paddleCol;
-	paddleRow = SCREENHEIGHT - 10;
+	paddleCol_Bottom = (SCREENWIDTH - paddleSize) / 2;
+	prevPaddleCol_Bottom = paddleCol_Bottom;
+	paddleRow_Bottom = SCREENHEIGHT - 10;
+	paddleCol_Top = (SCREENWIDTH - paddleSize) / 2;
+	prevPaddleCol_Top = paddleCol_Top;
+	paddleRow_Top = 10;
 	paddleSpeed = 1;
-
-	// brick initialization
-	brickRow;
-	brickCol;
-	brickHeight;
-	brickWidth;
 
 	// ball initialization
 	ballSize = 5;
@@ -89,8 +83,12 @@ void draw() {
 	drawSquare(prevBallRow, prevBallCol, ballSize, BLACK);
 	// draw ball
 	drawSquare(ballRow, ballCol, ballSize, MAGENTA);
-	// erase paddle
-	drawHorizontalLine(paddleRow, prevPaddleCol, paddleSize, BLACK);
-	// draw paddle
-	drawHorizontalLine(paddleRow, paddleCol, paddleSize, CYAN);
+	// erase bottom paddle
+	drawHorizontalLine(paddleRow_Bottom, prevPaddleCol_Bottom, paddleSize, BLACK);
+	// draw bottom paddle
+	drawHorizontalLine(paddleRow_Bottom, paddleCol_Bottom, paddleSize, CYAN);
+	// erase top paddle
+	drawHorizontalLine(paddleRow_Top, prevPaddleCol_Top, paddleSize, BLACK);
+	// draw top paddle
+	drawHorizontalLine(paddleRow_Top, paddleCol_Top, paddleSize, CYAN);
 }
