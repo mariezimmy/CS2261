@@ -37,7 +37,6 @@ extern u16 *videoBuffer;
 
 // mode 3 drawing functions
 void setPixel(int row, int col, u16 color);
-void drawRect(int row, int col, int height, int width, u16 color);
 void drawSquare(int row, int col, int size, u16 color);
 
 // miscellaneous drawing functions
@@ -65,7 +64,7 @@ void waitForVBlank();
 extern u16 oldButtons;
 extern u16 buttons;
 
-// vutton Macros
+// button macros
 #define BUTTON_HELD(key) (~(BUTTONS) & (key))
 #define BUTTON_PRESSED(key) ((!(~(oldButtons) & (key))) && (~(buttons) & (key)))
 

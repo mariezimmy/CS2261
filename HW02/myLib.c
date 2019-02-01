@@ -1,22 +1,13 @@
 #include "myLib.h"
 
-unsigned short *videoBuffer = (unsigned short *)0x6000000;
+unsigned short *videoBuffer = (u16 *)0x6000000;
 
-void setPixel(int row, int col, unsigned short color) {
+void setPixel(int row, int col, u16 color) {
 
 	videoBuffer[OFFSET(row, col, SCREENWIDTH)] = color;
 }
 
-// this is for drawing the bricks and the ball
-void drawRect(int row, int col, int height, int width, unsigned short color) {
-
-	for (int i = 0; i < height; i++) {
-        for (int j = 0; j < width; j++) {
-            setPixel(row + i, col + j, color);
-        }
-    }
-}
-
+// this is for drawing the ball
 void drawSquare(int row, int col, int size, u16 color) {
     for (int i = 0; i < size; i++) {
         for (int j = 0; j < size; j++) {
