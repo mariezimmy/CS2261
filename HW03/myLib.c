@@ -18,6 +18,14 @@ void drawSquare(int row, int col, int size, u16 color) {
     }
 }
 
+void drawRectangle(int row, int col, int height, int width, u16 color) {
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            setPixel(row + i, col + j, color);
+        }
+    }
+}
+
 // this is for drawing the paddle
 void drawHorizontalLine(int row, int col, int length, u16 color) {
     for (int i = 0; i < length; i++) {

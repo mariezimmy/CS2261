@@ -149,6 +149,8 @@ void pauseState() {
 void goToPause() {
 
     fillScreen(GRAY);
+    drawRectangle(SCREENHEIGHT / 4, (SCREENWIDTH / 2) - 30, SCREENHEIGHT / 2, 20, WHITE);
+    drawRectangle(SCREENHEIGHT / 4, (SCREENWIDTH / 2) + 10, SCREENHEIGHT / 2, 20, WHITE);
     state = PAUSE;
 }
 

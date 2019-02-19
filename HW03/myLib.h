@@ -39,6 +39,7 @@ extern u16 *videoBuffer;
 // mode 3 drawing functions
 void setPixel(int row, int col, u16 color);
 void drawSquare(int row, int col, int size, u16 color);
+void drawRectangle(int row, int col, int height, int width, u16 color);
 void fillScreen(u16 color);
 
 // miscellaneous drawing functions
