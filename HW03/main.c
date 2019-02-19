@@ -75,12 +75,8 @@ void initialize() {
 
 void titleState() {
 
-    seed++;
-
     if (BUTTON_PRESSED(BUTTON_START)) {
-        srand(seed);
-        initGame();
-        goToGame();
+        goToInstructions();
     }
 }
 
@@ -118,10 +114,13 @@ void goToInstructions() {
 
 void instructionsState() {
 
+    seed++;
 	// press start to go to game
 	if (BUTTON_PRESSED(BUTTON_START)) {
-		goToGame();
-	}
+        srand(seed);
+        initGame();
+        goToGame();
+    }
 	// press select to go title
 	else if (BUTTON_PRESSED(BUTTON_SELECT)) {
 		goToTitle();
