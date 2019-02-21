@@ -55,6 +55,7 @@ void drawChar(int row, int col, char ch, u16 color) {
 // remember to input charBuffer[41] = "someString";
 // so that way, we do not draw a string past the row length
 void drawString(int row, int col, char *str, u16 color) {
+
     int i = 0;
     while (str[i] != '\0') {
         drawChar(row, col, str[i], color);

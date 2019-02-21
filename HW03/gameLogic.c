@@ -140,7 +140,7 @@ void drawBall(BALL* b) {
 
 void updateBottomPaddlePosition() {
 
-    int paddleSpeed = 1;
+    int paddleSpeed = 2;
     prevPaddleCol_Bottom = paddleCol_Bottom;
 
     if (BUTTON_HELD(BUTTON_LEFT)) {
@@ -161,7 +161,7 @@ void updateBottomPaddlePosition() {
 
 void updateTopPaddlePosition() {
 
-    int paddleSpeed = 1;
+    int paddleSpeed = 2;
     prevPaddleCol_Top = paddleCol_Top;
 
     if (BUTTON_HELD(BUTTON_B)) {

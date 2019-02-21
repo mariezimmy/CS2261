@@ -86,8 +86,6 @@ void goToTitle() {
 
     fillScreen(BLUE);
     drawString(76, 60, "PONG: 5-ball Edition", WHITE);
-
-
     state = TITLE;
 }
 
