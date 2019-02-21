@@ -1,6 +1,7 @@
-#include "myLib.h"
-#include "gameLogic.h"
 #include <stdlib.h>
+#include "font.h"
+#include "gameLogic.h"
+#include "myLib.h"
 
 // paddles
 int paddleSize;
@@ -54,14 +55,14 @@ void updateGame() {
 void initPaddles() {
 
     // paddle initialization
-    paddleSize = SCREENWIDTH / 4;
+    paddleSize = SCREENWIDTH / 3;
     paddleCol_Bottom = (SCREENWIDTH - paddleSize) / 2;
     prevPaddleCol_Bottom = paddleCol_Bottom;
     paddleRow_Bottom = SCREENHEIGHT - 10;
     paddleCol_Top = (SCREENWIDTH - paddleSize) / 2;
     prevPaddleCol_Top = paddleCol_Top;
     paddleRow_Top = 10;
-    paddleSpeed = 1;
+    paddleSpeed = 2;
 }
 
 void initBalls() {

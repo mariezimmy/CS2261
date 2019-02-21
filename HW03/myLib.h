@@ -41,6 +41,8 @@ void setPixel(int row, int col, u16 color);
 void drawSquare(int row, int col, int size, u16 color);
 void drawRectangle(int row, int col, int height, int width, u16 color);
 void fillScreen(u16 color);
+void drawChar(int row, int col, char ch, u16 color);
+void drawString(int row, int col, char *str, u16 color);
 
 // miscellaneous drawing functions
 void waitForVBlank();
@@ -70,5 +72,51 @@ extern u16 buttons;
 // button macros
 #define BUTTON_HELD(key) (~(BUTTONS) & (key))
 #define BUTTON_PRESSED(key) ((!(~(oldButtons) & (key))) && (~(buttons) & (key)))
+
+// =================================== DMA ====================================
+
+// DMA struct
+typedef volatile struct {
+    volatile const void *src;
+    volatile void *dst;
+    unsigned int cnt;
+} DMA;
+
+// first DMA register address
+extern DMA *dma;
+
+// destination adjustment
+#define DMA_DESTINATION_INCREMENT (0 << 21)
+#define DMA_DESTINATION_DECREMENT (1 << 21)
+#define DMA_DESTINATION_FIXED (2 << 21)
+#define DMA_DESTINATION_RESET (3 << 21)
+
+// source adjustment
+#define DMA_SOURCE_INCREMENT (0 << 23)
+#define DMA_SOURCE_DECREMENT (1 << 23)
+#define DMA_SOURCE_FIXED (2 << 23)
+
+// VBlank and HBlank repeats
+#define DMA_REPEAT (1 << 25)
+
+// chunk size
+#define DMA_16 (0 << 26)
+#define DMA_32 (1 << 26)
+
+// timing mode
+#define DMA_NOW (0 << 28)
+#define DMA_AT_VBLANK (1 << 28)
+#define DMA_AT_HBLANK (2 << 28)
+#define DMA_AT_REFRESH (3 << 28)
+
+// interrupts
+#define DMA_IRQ (1 << 30)
+
+// begin DMA
+#define DMA_ON (1 << 31)
+
+// DMA functions
+void DMANow(int channel, volatile const void *src, volatile void *dst, unsigned int cnt);
+
 
 #endif

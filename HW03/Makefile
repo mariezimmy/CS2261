@@ -1,5 +1,5 @@
 PRODUCT_NAME       = Project
-SOURCES            = main.c myLib.c myLib.h gameLogic.c gameLogic.h
+SOURCES            = main.c myLib.c myLib.h gameLogic.c gameLogic.h font.c font.h
 CCPATH             = /usr/bin
 DKPATH             = /Users/mariezimmy/CS2261/devkitARM/bin
 VBASIM             = open /Users/mariezimmy/CS2261/visualboyadvance-m.app

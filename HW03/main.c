@@ -1,6 +1,7 @@
-#include "myLib.h"
-#include "gameLogic.h"
 #include <stdlib.h>
+#include "font.h"
+#include "gameLogic.h"
+#include "myLib.h"
 
 // prototypes
 void initialize();
@@ -75,6 +76,7 @@ void initialize() {
 
 void titleState() {
 
+    drawString(148, 84, "Press Start!", WHITE);
     if (BUTTON_PRESSED(BUTTON_START)) {
         goToInstructions();
     }
@@ -82,7 +84,10 @@ void titleState() {
 
 void goToTitle() {
 
-    fillScreen(CYAN);
+    fillScreen(BLUE);
+    drawString(76, 60, "PONG: 5-ball Edition", WHITE);
+
+
     state = TITLE;
 }
 
@@ -109,6 +114,19 @@ void gameState() {
 void goToInstructions() {
 
 	fillScreen(BLUE);
+    drawString(6, 84, "INSTRUCTIONS", WHITE);
+    drawString(20, 2, "The motive is to keep the balls up. You", WHITE);
+    drawString(32, 2, "lose a ball if it goes below the bottom", WHITE);
+    drawString(44, 2, "paddle or above the top paddle.", WHITE);
+
+    drawString(60, 2, "Bottom paddle right: right arrow", WHITE);
+    drawString(72, 2, "Bottom paddle left: left arrow", WHITE);
+    drawString(84, 2, "Top paddle right: A (X on emulator)", WHITE);
+    drawString(96, 2, "Top paddle left: B (Z on emulator)", WHITE);
+    drawString(108, 2, "Pause: press Start", WHITE);
+    drawString(120, 2, "View instrustions again: press Select", WHITE);
+
+    drawString(148, 60, "Press Start to play!", WHITE);
 	state = INSTRUCTIONS;
 }
 
@@ -150,6 +168,8 @@ void goToPause() {
     fillScreen(GRAY);
     drawRectangle(SCREENHEIGHT / 4, (SCREENWIDTH / 2) - 30, SCREENHEIGHT / 2, 20, WHITE);
     drawRectangle(SCREENHEIGHT / 4, (SCREENWIDTH / 2) + 10, SCREENHEIGHT / 2, 20, WHITE);
+    drawString(136, 12, "Return to title screen: press Select", WHITE);
+    drawString(148, 39, "Return to game: press Start", WHITE);
     state = PAUSE;
 }
 
@@ -164,5 +184,7 @@ void loseState() {
 void goToLose() {
 
     fillScreen(RED);
+    drawString(76, 96, "YOU LOSE", WHITE);
+    drawString(148, 14, "Return to title screen: press Start", WHITE);
     state = LOSE;
 }
