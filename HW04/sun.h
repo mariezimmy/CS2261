@@ -17,6 +17,7 @@
 #ifndef GRIT_SUN_H
 #define GRIT_SUN_H
 
+// the indices of common colors in sunPal
 #define BLACK 64
 #define RED 65
 #define GREEN 66

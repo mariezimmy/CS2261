@@ -185,9 +185,11 @@ void updatePaddlePosition() {
     int paddleSpeed = 2;
     prevPaddleCol = paddleCol;
 
+    // move paddle left
     if (BUTTON_HELD(BUTTON_LEFT)) {
         paddleCol -= paddleSpeed;
     }
+    // move paddle right
     if (BUTTON_HELD(BUTTON_RIGHT)) {
         paddleCol += paddleSpeed;
     }

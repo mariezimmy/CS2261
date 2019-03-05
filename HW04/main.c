@@ -67,7 +67,7 @@ int main() {
 	}
 }
 
-// sets up the mode4
+// sets up mode4
 void initialize() {
 
 	REG_DISPCTL = MODE4 | BG2_ENABLE | DISP_BACKBUFFER;
@@ -113,6 +113,7 @@ void gameState() {
         goToWin();
     }
 
+    // if no more balls, you've lost
     else if (ballsRemaining == 0) {
         goToLose();
     }
