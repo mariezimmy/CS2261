@@ -2,6 +2,8 @@
 #include "font.h"
 #include "gameLogic.h"
 #include "myLib.h"
+#include "sun.h"
+#include "tired.h"
 
 unsigned short *videoBuffer = (u16 *)0x6000000;
 

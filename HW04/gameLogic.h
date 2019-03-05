@@ -4,7 +4,7 @@ typedef struct {
     int col;
     int height;
     int width;
-    unsigned short color;
+    unsigned char colorIndex;
     int active;
     int erased;
 } BRICK;
@@ -19,27 +19,31 @@ typedef struct {
     int cdel;
     int height;
     int width;
-    unsigned short color;
+    unsigned char colorIndex;
     int active;
     int erased;
 } BALL;
 
 // constants
-#define BRICKCOUNT 15
-#define BALLCOUNT 3
+#define BRICKCOUNT 18
+#define BALLCOUNT 4
 
 // variables
 extern BRICK bricks[BRICKCOUNT];
 extern int bricksRemaining;
 extern BALL balls[BALLCOUNT];
+extern int ballsRemaining;
+
 
 // prototypes
 void initGame();
 void updateGame();
 void drawGame();
 void initBricks();
-void drawBricks(BRICK *);
+void drawBrick(BRICK *);
 void initBalls();
+void initPaddles();
 void updateBall(BALL *);
 void drawBall(BALL *);
+void updatePaddlePosition();
 int collision(int, int, int, int, int, int, int, int);

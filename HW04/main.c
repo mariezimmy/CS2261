@@ -2,15 +2,16 @@
 #include "font.h"
 #include "gameLogic.h"
 #include "myLib.h"
+#include "sun.h"
+#include "tired.h"
+#include "colors.h"
 
 // prototypes
 void initialize();
 
 // state prototypes
-void titleState();
-void goToTitle();
-void instructionsState();
-void goToInstructions();
+void startState();
+void goToStart();
 void gameState();
 void goToGame();
 void pauseState();
@@ -21,7 +22,7 @@ void loseState();
 void goToLose();
 
 // states
-enum {TITLE, INSTRUCTIONS, GAME, PAUSE, WIN, LOSE};
+enum {START, GAME, PAUSE, WIN, LOSE};
 int state;
 
 // random Seed
@@ -30,6 +31,9 @@ int seed;
 // buttons
 u16 buttons;
 u16 oldButtons;
+
+// text buffer
+char buffer[41];
 
 int main() {
 
@@ -43,11 +47,8 @@ int main() {
 
 	    // state machine
 	    switch (state) {
-	        case TITLE:
-	            titleState();
-	            break;
-	        case INSTRUCTIONS:
-	        	instructionsState();
+	        case START:
+	            startState();
 	        	break;
 	        case GAME:
 	            gameState();
@@ -57,6 +58,7 @@ int main() {
 	            break;
 	        case WIN:
 	            winState();
+                break;
             case LOSE:
                 loseState();
 	            break;
@@ -66,147 +68,128 @@ int main() {
 	}
 }
 
-// sets up the display and the game objects
+// sets up the mode4
 void initialize() {
 
-	REG_DISPCTL = MODE3 | BG2_ENABLE;
+	REG_DISPCTL = MODE4 | BG2_ENABLE | DISP_BACKBUFFER;
 
 	// button initialization
 	buttons = BUTTONS;
 	oldButtons = 0;
 
-	goToTitle();
+	goToStart();
 }
 
-void titleState() {
+void startState() {
+    seed++;
 
-    drawString4(148, 84, "Press Start!", WHITE);
+    waitForVBlank();
     if (BUTTON_PRESSED(BUTTON_START)) {
-        goToInstructions();
+        srand(seed);
+        DMANow(3, colorsPal, PALETTE, 256);
+        goToGame();
+        initGame();
     }
 }
 
-void goToTitle() {
+void goToStart() {
 
-    fillScreen4(BLUE);
-    drawString4(76, 60, "PONG: 5-ball Edition", WHITE);
-    state = TITLE;
+    DMANow(3, tiredPal, PALETTE, 256);
+    drawFullscreenImage4(tiredBitmap);
+    waitForVBlank();
+    flipPage();
+    state = START;
 }
 
 void gameState() {
-
     updateGame();
-    waitForVBlank();
     drawGame();
+    waitForVBlank();
+    flipPage();
 
     // if no more bricks, you've won
     if (bricksRemaining == 0) {
         goToWin();
     }
 
-    if (ballsRemaining == 0) {
+    else if (ballsRemaining == 0) {
         goToLose();
     }
     // press start to pause
     else if (BUTTON_PRESSED(BUTTON_START)) {
         goToPause();
     }
-    // press select to go to instrustions
-    else if (BUTTON_PRESSED(BUTTON_SELECT)) {
-    	goToInstructions();
-    }
-}
-
-void goToInstructions() {
-
-	fillScreen4(BLUE);
-    drawString4(6, 84, "INSTRUCTIONS", WHITE);
-    drawString4(20, 2, "The motive is to keep the balls up. You", WHITE);
-    drawString4(32, 2, "lose a ball if it goes below the bottom", WHITE);
-    drawString4(44, 2, "paddle or above the top paddle.", WHITE);
-
-    drawString4(60, 2, "Bottom paddle right: right arrow", WHITE);
-    drawString4(72, 2, "Bottom paddle left: left arrow", WHITE);
-    drawString4(84, 2, "Top paddle right: A (X on emulator)", WHITE);
-    drawString4(96, 2, "Top paddle left: B (Z on emulator)", WHITE);
-    drawString4(108, 2, "Pause: press Start", WHITE);
-    drawString4(120, 2, "View instrustions again: press Select", WHITE);
-
-    drawString(148, 60, "Press Start to play!", WHITE);
-	state = INSTRUCTIONS;
-}
-
-void instructionsState() {
-
-    seed++;
-	// press start to go to game
-	if (BUTTON_PRESSED(BUTTON_START)) {
-        srand(seed);
-        initGame();
-        goToGame();
-    }
-	// press select to go title
-	else if (BUTTON_PRESSED(BUTTON_SELECT)) {
-		goToTitle();
-	}
 }
 
 void goToGame() {
 
-    fillScreen4(BLACK);
     state = GAME;
 }
 
 void pauseState() {
 
+    waitForVBlank();
 	// press start to go back to game
     if (BUTTON_PRESSED(BUTTON_START)) {
         goToGame();
     }
     // press select to go back to title
     else if (BUTTON_PRESSED(BUTTON_SELECT)) {
-        goToTitle();
+        goToStart();
     }
 }
 
 void goToPause() {
 
+    DMANow(3, colorsPal, PALETTE, 256);
     fillScreen4(GRAY);
     drawRectangle4(SCREENHEIGHT / 4, (SCREENWIDTH / 2) - 30, SCREENHEIGHT / 2, 20, WHITE);
     drawRectangle4(SCREENHEIGHT / 4, (SCREENWIDTH / 2) + 10, SCREENHEIGHT / 2, 20, WHITE);
     drawString4(136, 12, "Return to title screen: press Select", WHITE);
-    drawString4(148, 39, "Return to game: press Start", WHITE);
+    // drawString4(148, 39, "Return to game: press Start", WHITE);
+    sprintf(buffer, "col brick 17: %d", bricks[17].col);
+    drawString4(145, 5, buffer, WHITE);
+    waitForVBlank();
+    flipPage();
     state = PAUSE;
 }
 
 void winState() {
 
+    waitForVBlank();
 	// press start to go to title
     if (BUTTON_PRESSED(BUTTON_START)) {
-        goToTitle();
+        goToStart();
     }
 }
 
 void goToWin() {
 
+    DMANow(3, colorsPal, PALETTE, 256);
     fillScreen4(GREEN);
     drawString4(76, 96, "YOU WIN!", WHITE);
     drawString4(148, 14, "Return to title screen: press Start", WHITE);
+    waitForVBlank();
+    flipPage();
     state = WIN;
 }
 
 void loseState() {
 
+    waitForVBlank();
     // press start to go to title
     if (BUTTON_PRESSED(BUTTON_START)) {
-        goToTitle();
+        goToStart();
     }
 }
 
 void goToLose() {
 
+    DMANow(3, colorsPal, PALETTE, 256);
     fillScreen4(RED);
     drawString4(76, 96, "YOU LOSE", WHITE);
     drawString4(148, 14, "Return to title screen: press Start", WHITE);
+    waitForVBlank();
+    flipPage();
     state = LOSE;
 }

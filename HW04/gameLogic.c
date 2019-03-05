@@ -2,6 +2,9 @@
 #include "font.h"
 #include "gameLogic.h"
 #include "myLib.h"
+#include "sun.h"
+#include "tired.h"
+#include "colors.h"
 
 // paddles
 int paddleSize;
@@ -22,11 +25,16 @@ int ballsRemaining;
 void initGame() {
 
     bricksRemaining = BRICKCOUNT;
+    ballsRemaining = BALLCOUNT;
     initBricks();
     initBalls();
+    initPaddles();
 }
 
 void drawGame() {
+
+    DMANow(3, colorsPal, PALETTE, 256);
+    fillScreen4(BLACK);
 
     // draw bricks
     for (int i = 0; i < BRICKCOUNT; i++) {
@@ -35,13 +43,13 @@ void drawGame() {
 
     // draw balls
     for (int j = 0; j < BALLCOUNT; j++) {
-        drawBall(&balls[i]);
+        drawBall(&balls[j]);
     }
 
     // erase paddle
-    drawHorizontalLine(paddleRow, prevPaddleCol, paddleSize, BLACK);
+    drawHorizontalLine4(paddleRow, prevPaddleCol, paddleSize, BLACK);
     // draw paddle
-    drawHorizontalLine(paddleRow, paddleCol, paddleSize, CYAN);
+    drawHorizontalLine4(paddleRow, paddleCol, paddleSize, CYAN);
 }
 
 void updateGame() {
@@ -59,28 +67,49 @@ void initPaddles() {
 
     // paddle initialization
     paddleSize = SCREENWIDTH / 3;
-    paddleCol = (SCREENWIDTH - paddleSize) / 2;
+    paddleCol = (SCREENWIDTH - paddleSize) / 2 + 10;
     prevPaddleCol = paddleCol;
     paddleRow = SCREENHEIGHT - 10;
-    paddleSpeed = 2;
+    paddleSpeed = 4;
 }
 
 void initBricks() {
 
-    //brick initialization
+    // brick initialization
+    int brickCol = 5;
+    int brickRow = 5;
     for (int i = 0; i < BRICKCOUNT; i++) {
-        bricks[i].height = 5;
-        bricks[i].width = 5;
-        bricks[i].row = rand() % 110;
-        bricks[i].col = rand() % 130 + 10;
-        bricks[i].color = BLUE;
+        if ((i != 0) && ((i) % 6 == 0)) {
+            brickRow += 30;
+            brickCol = 5;
+        }
+        bricks[i].height = 20;
+        bricks[i].width = 30;
+        bricks[i].colorIndex = 5;
         bricks[i].active = 1;
         bricks[i].erased = 0;
+        bricks[i].row = brickRow;
+        bricks[i].col = brickCol + ((i % 6) * 40);
     }
 }
 
 void initBalls() {
 
+    // ball initialization
+    int ballCol = (SCREENWIDTH / 2) - 11;
+    for (int i = 0; i < BALLCOUNT; i++) {
+        balls[i].height = 4;
+        balls[i].width = 4;
+        balls[i].row = SCREENHEIGHT - 40;
+        balls[i].col = ballCol + (10 * i);
+        balls[i].oldRow = balls[i].row;
+        balls[i].oldCol = balls[i].col;
+        balls[i].rdel = 2;
+        balls[i].cdel = 2;
+        balls[i].colorIndex = 1 + i;
+        balls[i].active = 1;
+        balls[i].erased = 0;
+    }
 }
 
 // handle every-frame actions of a ball
@@ -107,8 +136,20 @@ void updateBall(BALL* b) {
             b->rdel *= -1;
         }
 
-        // handle if ball falls below the  paddle
-        if (b->row > paddleRow_Bottom) {
+        // handle ball-brick collisions
+        for (int i = 0; i < BRICKCOUNT; i++) {
+            if (bricks[i].active &&
+                collision(b->row, b->col, b->height, b->width,
+                bricks[i].row, bricks[i].col, bricks[i].height, bricks[i].width)) {
+
+                    bricks[i].active = 0;
+                    bricksRemaining--;
+                    b->rdel *= -1;
+            }
+        }
+
+        // handle if ball falls below the paddle
+        if (b->row > paddleRow) {
             b->active = 0;
             ballsRemaining--;
         }
@@ -118,9 +159,10 @@ void updateBall(BALL* b) {
 // draw a ball
 void drawBall(BALL* b) {
 
+    DMANow(3, colorsPal, PALETTE, 256);
     if (b->active) {
-        drawSquare(4b->oldRow, b->oldCol, b->height, BLACK);
-        drawSquare4(b->row, b->col, b->height, b->color);
+        drawSquare4(b->oldRow, b->oldCol, b->height, BLACK);
+        drawSquare4(b->row, b->col, b->height, b->colorIndex);
     } else if (!b->erased) {
         drawSquare4(b->oldRow, b->oldCol, b->height, BLACK);
         b->erased = 1;
@@ -132,8 +174,9 @@ void drawBall(BALL* b) {
 // draw a brick
 void drawBrick(BRICK* b) {
 
+    DMANow(3, colorsPal, PALETTE, 256);
     if (b->active) {
-        drawRectangle4(b->row, b->col, b->height, b->width, b->color);
+        drawRectangle4(b->row, b->col, b->height, b->width, b->colorIndex);
     } else if (!b->erased) {
         drawRectangle4(b->row, b->col, b->height, b->width, BLACK);
         b->erased = 1;

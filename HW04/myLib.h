@@ -2,17 +2,20 @@
 #define MY_LIB_H
 
 // common typedefs
-typedef unsigned short u16;
 typedef unsigned char u8;
+typedef unsigned short u16;
+typedef unsigned int u32;
 
 // common macros
-#define OFFSET(r,c,rowlen) ((r)*(rowlen)+(c))
+#define OFFSET(r, c, rowlen) ((r) * (rowlen) + (c))
 
 // ================================= DISPLAY ==================================
 
 // display control register
 #define REG_DISPCTL (*(u16 *)0x4000000)
 #define MODE3 3
+#define MODE4 4
+#define DISP_BACKBUFFER (1<<4)
 #define BG2_ENABLE (1<<10)
 
 // display status registers
@@ -24,18 +27,11 @@ typedef unsigned char u8;
 
 // video buffer
 extern u16 *videoBuffer;
+#define FRONTBUFFER ((u16 *)0x6000000)
+#define BACKBUFFER ((u16 *)0x600A000)
 
-// color
-#define COLOR(r,g,b) ((r) | (g)<<5 | (b)<<10)
-#define BLACK 0
-#define WHITE COLOR(31,31,31)
-#define RED COLOR(31,0,0)
-#define GREEN COLOR(0,31,0)
-#define BLUE COLOR(0,0,31)
-#define CYAN COLOR(0,31,31)
-#define MAGENTA COLOR(31,0,31)
-#define GRAY COLOR(15,15,15)
-#define YELLOW COLOR(31,31,0)
+// mode 4 palette
+#define PALETTE ((unsigned short *)0x5000000)
 
 // mode 4 drawing functions
 void setPixel4(int row, int col, u8 colorIndex);
@@ -122,7 +118,7 @@ extern DMA *dma;
 #define DMA_ON (1 << 31)
 
 // DMA functions
-void DMANow(int channel, volatile const void *src, volatile void *dst, unsigned int cnt);
+void DMANow(int channel, volatile const void *src, volatile void *dst, u32 cnt);
 
 
 #endif
