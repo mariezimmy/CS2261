@@ -4,7 +4,6 @@ typedef struct {
     int col;
     int height;
     int width;
-    unsigned char colorIndex;
     int active;
     int erased;
 } BRICK;
@@ -42,7 +41,7 @@ void drawGame();
 void initBricks();
 void drawBrick(BRICK *);
 void initBalls();
-void initPaddles();
+void initPaddle();
 void updateBall(BALL *);
 void drawBall(BALL *);
 void updatePaddlePosition();

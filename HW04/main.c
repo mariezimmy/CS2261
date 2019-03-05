@@ -4,7 +4,6 @@
 #include "myLib.h"
 #include "sun.h"
 #include "tired.h"
-#include "colors.h"
 
 // prototypes
 void initialize();
@@ -86,7 +85,7 @@ void startState() {
     waitForVBlank();
     if (BUTTON_PRESSED(BUTTON_START)) {
         srand(seed);
-        DMANow(3, colorsPal, PALETTE, 256);
+        DMANow(3, sunPal, PALETTE, 256);
         goToGame();
         initGame();
     }
@@ -104,6 +103,8 @@ void goToStart() {
 void gameState() {
     updateGame();
     drawGame();
+    sprintf(buffer, "Suns remaining: %d", bricksRemaining);
+    drawString4(148, 0, buffer, WHITE);
     waitForVBlank();
     flipPage();
 
@@ -141,14 +142,12 @@ void pauseState() {
 
 void goToPause() {
 
-    DMANow(3, colorsPal, PALETTE, 256);
+    DMANow(3, sunPal, PALETTE, 256);
     fillScreen4(GRAY);
     drawRectangle4(SCREENHEIGHT / 4, (SCREENWIDTH / 2) - 30, SCREENHEIGHT / 2, 20, WHITE);
     drawRectangle4(SCREENHEIGHT / 4, (SCREENWIDTH / 2) + 10, SCREENHEIGHT / 2, 20, WHITE);
     drawString4(136, 12, "Return to title screen: press Select", WHITE);
-    // drawString4(148, 39, "Return to game: press Start", WHITE);
-    sprintf(buffer, "col brick 17: %d", bricks[17].col);
-    drawString4(145, 5, buffer, WHITE);
+    drawString4(148, 39, "Return to game: press Start", WHITE);
     waitForVBlank();
     flipPage();
     state = PAUSE;
@@ -165,7 +164,7 @@ void winState() {
 
 void goToWin() {
 
-    DMANow(3, colorsPal, PALETTE, 256);
+    DMANow(3, sunPal, PALETTE, 256);
     fillScreen4(GREEN);
     drawString4(76, 96, "YOU WIN!", WHITE);
     drawString4(148, 14, "Return to title screen: press Start", WHITE);
@@ -185,7 +184,7 @@ void loseState() {
 
 void goToLose() {
 
-    DMANow(3, colorsPal, PALETTE, 256);
+    DMANow(3, sunPal, PALETTE, 256);
     fillScreen4(RED);
     drawString4(76, 96, "YOU LOSE", WHITE);
     drawString4(148, 14, "Return to title screen: press Start", WHITE);

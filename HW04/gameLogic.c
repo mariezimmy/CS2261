@@ -4,7 +4,6 @@
 #include "myLib.h"
 #include "sun.h"
 #include "tired.h"
-#include "colors.h"
 
 // paddles
 int paddleSize;
@@ -28,12 +27,12 @@ void initGame() {
     ballsRemaining = BALLCOUNT;
     initBricks();
     initBalls();
-    initPaddles();
+    initPaddle();
 }
 
 void drawGame() {
 
-    DMANow(3, colorsPal, PALETTE, 256);
+    DMANow(3, sunPal, PALETTE, 256);
     fillScreen4(BLACK);
 
     // draw bricks
@@ -63,33 +62,32 @@ void updateGame() {
     updatePaddlePosition();
 }
 
-void initPaddles() {
+void initPaddle() {
 
     // paddle initialization
-    paddleSize = SCREENWIDTH / 3;
+    paddleSize = SCREENWIDTH / 6;
     paddleCol = (SCREENWIDTH - paddleSize) / 2 + 10;
     prevPaddleCol = paddleCol;
-    paddleRow = SCREENHEIGHT - 10;
+    paddleRow = SCREENHEIGHT - 18;
     paddleSpeed = 4;
 }
 
 void initBricks() {
 
     // brick initialization
-    int brickCol = 5;
+    int brickCol = 10;
     int brickRow = 5;
     for (int i = 0; i < BRICKCOUNT; i++) {
         if ((i != 0) && ((i) % 6 == 0)) {
-            brickRow += 30;
-            brickCol = 5;
+            brickRow += 37;
+            brickCol = 10;
         }
-        bricks[i].height = 20;
-        bricks[i].width = 30;
-        bricks[i].colorIndex = 5;
+        bricks[i].height = 32;
+        bricks[i].width = 32;
         bricks[i].active = 1;
         bricks[i].erased = 0;
         bricks[i].row = brickRow;
-        bricks[i].col = brickCol + ((i % 6) * 40);
+        bricks[i].col = brickCol + ((i % 6) * 38);
     }
 }
 
@@ -104,9 +102,9 @@ void initBalls() {
         balls[i].col = ballCol + (10 * i);
         balls[i].oldRow = balls[i].row;
         balls[i].oldCol = balls[i].col;
-        balls[i].rdel = 2;
-        balls[i].cdel = 2;
-        balls[i].colorIndex = 1 + i;
+        balls[i].rdel = 1;
+        balls[i].cdel = 1;
+        balls[i].colorIndex = 65 + i;
         balls[i].active = 1;
         balls[i].erased = 0;
     }
@@ -159,7 +157,6 @@ void updateBall(BALL* b) {
 // draw a ball
 void drawBall(BALL* b) {
 
-    DMANow(3, colorsPal, PALETTE, 256);
     if (b->active) {
         drawSquare4(b->oldRow, b->oldCol, b->height, BLACK);
         drawSquare4(b->row, b->col, b->height, b->colorIndex);
@@ -174,9 +171,9 @@ void drawBall(BALL* b) {
 // draw a brick
 void drawBrick(BRICK* b) {
 
-    DMANow(3, colorsPal, PALETTE, 256);
+
     if (b->active) {
-        drawRectangle4(b->row, b->col, b->height, b->width, b->colorIndex);
+        drawImage4(b->row, b->col, b->height, b->width, sunBitmap);
     } else if (!b->erased) {
         drawRectangle4(b->row, b->col, b->height, b->width, BLACK);
         b->erased = 1;
