@@ -126,6 +126,9 @@ extern u16 buttons;
 
 // ================================= SPRITES ==================================
 
+// sprite constants
+#define SPRITE_MAX 128
+
 // display control register
 #define SPRITE_ENABLE   (1 << 12)
 #define SPRITE_MODE_2D  (0 << 6)

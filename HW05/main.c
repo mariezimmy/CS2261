@@ -41,6 +41,9 @@ int vOff;
 // text buffer
 char buffer[41];
 
+// shadow OAM
+OBJ_ATTR shadowOAM[128];
+
 int main() {
 
     initialize();
@@ -110,6 +113,10 @@ void goToStart() {
     DMANow(3, startStateImageTiles, &CHARBLOCK[0], 1104);
     // load maps into screenblocks
     DMANow(3, startStateImageMap, &SCREENBLOCK[28], 1024);
+    // hide sprites
+    for (int i = 0; i < SPRITE_MAX; i++) {
+        shadowOAM[i].attr0 = OBJECT_MODE_HIDE;
+    }
     waitForVBlank();
     state = START;
 }
@@ -169,6 +176,10 @@ void goToPause() {
     DMANow(3, pauseStateImageTiles, &CHARBLOCK[0], 480);
     // load maps into screenblocks
     DMANow(3, pauseStateImageMap, &SCREENBLOCK[28], 1024);
+    // hide sprites
+    for (int i = 0; i < SPRITE_MAX; i++) {
+        shadowOAM[i].attr0 = OBJECT_MODE_HIDE;
+    }
     waitForVBlank();
     state = PAUSE;
 }
@@ -188,6 +199,10 @@ void goToWin() {
     DMANow(3, winStateImageTiles, &CHARBLOCK[0], 2432);
     // load maps into screenblocks
     DMANow(3, winStateImageMap, &SCREENBLOCK[28], 1024);
+    // hide sprites
+    for (int i = 0; i < SPRITE_MAX; i++) {
+        shadowOAM[i].attr0 = OBJECT_MODE_HIDE;
+    }
     waitForVBlank();
     state = WIN;
 }
@@ -207,6 +222,10 @@ void goToLose() {
     DMANow(3, loseStateImageTiles, &CHARBLOCK[0], 1664);
     // load maps into screenblocks
     DMANow(3, loseStateImageMap, &SCREENBLOCK[28], 1024);
+    // hide sprites
+    for (int i = 0; i < SPRITE_MAX; i++) {
+        shadowOAM[i].attr0 = OBJECT_MODE_HIDE;
+    }
     waitForVBlank();
     state = LOSE;
 }
