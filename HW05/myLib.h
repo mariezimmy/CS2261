@@ -17,6 +17,9 @@ typedef unsigned int u32;
 #define MODE3 3
 #define MODE4 4
 #define DISP_BACKBUFFER (1<<4)
+#define SPRITE_ENABLE   (1<<12)
+#define SPRITE_MODE_2D  (0<<6)
+#define SPRITE_MODE_1D  (1<<6)
 
 // backgrounds
 #define BG0_ENABLE (1<<8)
@@ -126,53 +129,70 @@ extern u16 buttons;
 
 // ================================= SPRITES ==================================
 
-// sprite constants
-#define SPRITE_MAX 128
-
-// display control register
-#define SPRITE_ENABLE   (1 << 12)
-#define SPRITE_MODE_2D  (0 << 6)
-#define SPRITE_MODE_1D  (1 << 6)
-
-// align macro for object attribute
-#define ALIGN(x) __attribute__((aligned(x)))
-
-// object attribute struct
+// sprite attribute struct
 typedef struct {
-    u16 attr0;
-    u16 attr1;
-    u16 attr2;
-    u16 fill;
-} ALIGN(4) OBJ_ATTR;
+    unsigned short attr0;
+    unsigned short attr1;
+    unsigned short attr2;
+    unsigned short fill;
+} OBJ_ATTR;
+
+// object attribute memory
+#define OAM ((OBJ_ATTR*)(0x7000000))
+extern OBJ_ATTR shadowOAM[];
 
 // attribute 0
-#define OBJECT_MODE_REGULAR (0 << 8)
-#define OBJECT_MODE_AFFINE (1 << 8)
-#define OBJECT_MODE_HIDE (2 << 8)
-#define OBJECT_MODE_DBL_AFFINE (3 << 8)
-#define ALPHA_BLENDING_DISABLE (0 << 10)
-#define ALPHA_BLENDING_ENABLE (1 << 10)
-#define COLOR_4BPP (0 << 13)
-#define COLOR_8BPP (1 << 13)
-#define SPRITE_SHAPE_SQUARE (0 << 14)
-#define SPRITE_SHAPE_WIDE (1 << 14)
-#define SPRITE_SHAPE_TALL (2 << 14)
-
-// attribute 1
-#define SPRITE_HORIZONTAL_FLIP (1 << 12)
-#define SPRITE_VERTICAL_FLIP (2 << 12)
-#define SPRITE_SIZE_SMALL (0 << 14)
-#define SPRITE_SIZE_MEDIUM (1 << 14)
-#define SPRITE_SIZE_BIG (2 << 14)
-#define SPRITE_SIZE_GIANT (3 << 14)
+#define ATTR0_REGULAR      (0<<8)  // normal rendering
+#define ATTR0_AFFINE       (1<<8)  // affine rendering
+#define ATTR0_HIDE         (2<<8)  // no rendering (hidden)
+#define ATTR0_DOUBLEAFFINE (3<<8)  // double affine rendering
+#define ATTR0_NOBLEND      (0<<10) // disable alpha blending
+#define ATTR0_BLEND        (1<<10) // enable alpha blending
+#define ATTR0_WINDOW       (2<<10) // object window mode
+#define ATTR0_MOSAIC       (1<<12) // enable mosaic effect
+#define ATTR0_4BPP         (0<<13)
+#define ATTR0_8BPP         (1<<13)
+#define ATTR0_SQUARE       (0<<14)
+#define ATTR0_WIDE         (1<<14) //        |  TINY  | SMALL  | MEDIUM | LARGE  |
+#define ATTR0_TALL         (2<<14) // --------------------------------------------
+                                   // SQUARE |  8x8   | 16x16  | 32x32  | 64x64  |
+// attribute 1                     // --------------------------------------------
+#define ATTR1_HFLIP  (1<<12)       //  WIDE  |  16x8  | 32x8   | 32x16  | 64x32  |
+#define ATTR1_VFLIP  (1<<13)       // --------------------------------------------
+#define ATTR1_TINY   (0<<14)       //  TALL  |  8x16  | 8x32   | 16x32  | 32x64  |
+#define ATTR1_SMALL  (1<<14)       // --------------------------------------------
+#define ATTR1_MEDIUM (2<<14)
+#define ATTR1_LARGE  (3<<14)
 
 // attribute 2
-#define SPRITE_PRIORITY(priority) ((priority) << 10)
-#define SPRITE_SUBPAL(pal) ((pal) << 12)
+#define ATTR2_TILEID(row, col) ((row)*32+(col))
+#define ATTR2_PRIORITY(num)    ((num)<<10)
+#define ATTR2_PALROW(row)      ((row)<<12)
 
-// OAM
-#define OAM ((OBJ_ATTR *)0x07000000)
-OBJ_ATTR shadowOAM[128];
+// sprite functions
+void hideSprites();
+
+// sprite constants
+#define ROWMASK 0xFF
+#define COLMASK 0x1FF
+
+// generic struct for animated sprite
+typedef struct {
+    int screenRow;
+    int screenCol;
+    int worldRow;
+    int worldCol;
+    int rdel;
+    int cdel;
+    int width;
+    int height;
+    int aniCounter;
+    int aniState;
+    int prevAniState;
+    int curFrame;
+    int numFrames;
+    int hide;
+} ANISPRITE;
 
 // =================================== DMA ====================================
 

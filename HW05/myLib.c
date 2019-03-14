@@ -140,6 +140,12 @@ void DMANow(int channel, volatile const void *src, volatile void *dst, unsigned 
 
 }
 
+void hideSprites() {
+    for (int i = 0; i < 128; i++) {
+        shadowOAM[i].attr0 = ATTR0_HIDE;
+    }
+}
+
 void waitForVBlank() {
 
 	while(SCANLINECOUNTER > 160);
