@@ -78,8 +78,9 @@ extern u16 *videoBuffer;
 #define FRONTBUFFER ((u16 *)0x6000000)
 #define BACKBUFFER ((u16 *)0x600A000)
 
-// mode 4 palette
+// palettes
 #define PALETTE ((unsigned short *)0x5000000)
+#define SPRITEPALETTE ((unsigned short *)0x5000200)
 
 // mode 4 drawing functions
 void setPixel4(int row, int col, u8 colorIndex);
@@ -122,6 +123,53 @@ extern u16 buttons;
 // button macros
 #define BUTTON_HELD(key) (~(BUTTONS) & (key))
 #define BUTTON_PRESSED(key) ((!(~(oldButtons) & (key))) && (~(buttons) & (key)))
+
+// ================================= SPRITES ==================================
+
+// display control register
+#define SPRITE_ENABLE   (1 << 12)
+#define SPRITE_MODE_2D  (0 << 6)
+#define SPRITE_MODE_1D  (1 << 6)
+
+// align macro for object attribute
+#define ALIGN(x) __attribute__((aligned(x)))
+
+// object attribute struct
+typedef struct {
+    u16 attr0;
+    u16 attr1;
+    u16 attr2;
+    u16 fill;
+} ALIGN(4) OBJ_ATTR;
+
+// attribute 0
+#define OBJECT_MODE_REGULAR (0 << 8)
+#define OBJECT_MODE_AFFINE (1 << 8)
+#define OBJECT_MODE_HIDE (2 << 8)
+#define OBJECT_MODE_DBL_AFFINE (3 << 8)
+#define ALPHA_BLENDING_DISABLE (0 << 10)
+#define ALPHA_BLENDING_ENABLE (1 << 10)
+#define COLOR_4BPP (0 << 13)
+#define COLOR_8BPP (1 << 13)
+#define SPRITE_SHAPE_SQUARE (0 << 14)
+#define SPRITE_SHAPE_WIDE (1 << 14)
+#define SPRITE_SHAPE_TALL (2 << 14)
+
+// attribute 1
+#define SPRITE_HORIZONTAL_FLIP (1 << 12)
+#define SPRITE_VERTICAL_FLIP (2 << 12)
+#define SPRITE_SIZE_SMALL (0 << 14)
+#define SPRITE_SIZE_MEDIUM (1 << 14)
+#define SPRITE_SIZE_BIG (2 << 14)
+#define SPRITE_SIZE_GIANT (3 << 14)
+
+// attribute 2
+#define SPRITE_PRIORITY(priority) ((priority) << 10)
+#define SPRITE_SUBPAL(pal) ((pal) << 12)
+
+// OAM
+#define OAM ((OBJ_ATTR *)0x07000000)
+OBJ_ATTR shadowOAM[128];
 
 // =================================== DMA ====================================
 

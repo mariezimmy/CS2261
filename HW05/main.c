@@ -77,7 +77,7 @@ int main() {
 void initialize() {
 
     // enable mode 0 and background 0
-    REG_DISPCTL = MODE0 | BG0_ENABLE;
+    REG_DISPCTL = MODE0 | BG0_ENABLE | SPRITE_ENABLE;
 
     // set up background 0 control register
     REG_BG0CNT = BG_SIZE_SMALL | BG_CHARBLOCK(0) | BG_SCREENBLOCK(28);
@@ -120,6 +120,11 @@ void gameState() {
     // sprintf(buffer, "Suns remaining: %d", bricksRemaining);
     // drawString4(148, 0, buffer, WHITE);
     waitForVBlank();
+    if (BUTTON_PRESSED(BUTTON_START)) {
+        goToWin();
+    } else if (BUTTON_PRESSED(BUTTON_SELECT)) {
+        goToLose();
+    }
 
     // // if no more bricks, you've won
     // if (bricksRemaining == 0) {
