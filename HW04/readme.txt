@@ -1,5 +1,5 @@
 BUTTERCUP BRICKOUT OVERVIEW
-------------------------------
+---------------------------
 This simple, mode 4 GBA game has a few rules and a single motive.
 
 You are Buttercup, one of the Powerpuff Girls, and you have been angrily woken up this morning against your will. Frustrated, you decide to destroy the sun (and any stars like it) in an act contrary to your usual ethics. 
