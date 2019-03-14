@@ -1,6 +1,5 @@
 #include <stdlib.h>
-#include "font.h"
-//#include "gameLogic.h"
+#include "gameLogic.h"
 #include "gameStateImage.h"
 #include "loseStateImage.h"
 #include "myLib.h"
@@ -103,7 +102,7 @@ void startState() {
     if (BUTTON_PRESSED(BUTTON_START)) {
         srand(seed);
         goToGame();
-        //initGame();
+        initGame();
     }
 }
 
@@ -119,30 +118,23 @@ void goToStart() {
 }
 
 void gameState() {
-    // updateGame();
-    // drawGame();
-    // sprintf(buffer, "Suns remaining: %d", bricksRemaining);
-    // drawString4(148, 0, buffer, WHITE);
+    updateGame();
+    drawGame();
     waitForVBlank();
+    // press start to pause
     if (BUTTON_PRESSED(BUTTON_START)) {
-        goToWin();
-    } else if (BUTTON_PRESSED(BUTTON_SELECT)) {
-        goToLose();
+        goToPause();
     }
 
-    // // if no more bricks, you've won
-    // if (bricksRemaining == 0) {
-    //     goToWin();
-    // }
+    // if no more aliens, you've won
+    else if (aliensRemaining == 0) {
+        goToWin();
+    }
 
-    // // if no more balls, you've lost
-    // else if (ballsRemaining == 0) {
-    //     goToLose();
-    // }
-    // // press start to pause
-    // else if (BUTTON_PRESSED(BUTTON_START)) {
-    //     goToPause();
-    // }
+    // if no more hearts or the aliens reach you, you've lost
+    else if (heartsRemaining == 0 || PLAYERROW == bottomAlienRow) {
+        goToLose();
+    }
 }
 
 void goToGame() {

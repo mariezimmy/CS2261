@@ -139,7 +139,7 @@ typedef struct {
 
 // object attribute memory
 #define OAM ((OBJ_ATTR*)(0x7000000))
-extern OBJ_ATTR shadowOAM[];
+extern OBJ_ATTR shadowOAM[128];
 
 // attribute 0
 #define ATTR0_REGULAR      (0<<8)  // normal rendering
@@ -177,6 +177,11 @@ void hideSprites();
 #define COLMASK 0x1FF
 
 // generic struct for animated sprite
+// note: animation sprite variables are as followed:
+// aniCounter: used to count how many frames have passed
+// curFrame: which frame of animation sprite is in (row in spritesheet)
+// numFrames: the total number of frames
+// aniState: which state of animation sprite is in (column in spritesheet)
 typedef struct {
     int screenRow;
     int screenCol;

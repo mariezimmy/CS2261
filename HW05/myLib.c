@@ -1,6 +1,5 @@
 #include <stdlib.h>
-#include "font.h"
-//#include "gameLogic.h"
+#include "gameLogic.h"
 #include "gameStateImage.h"
 #include "loseStateImage.h"
 #include "myLib.h"

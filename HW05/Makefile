@@ -1,5 +1,5 @@
 PRODUCT_NAME       = Project
-SOURCES            = main.c myLib.c font.c winStateImage.c loseStateImage.c startStateImage.c pauseStateImage.c gameStateImage.c
+SOURCES            = main.c myLib.c font.c winStateImage.c loseStateImage.c startStateImage.c pauseStateImage.c gameStateImage.c gameLogic.c
 CCPATH             = /usr/bin
 DKPATH             = /Users/mariezimmy/CS2261/devkitARM/bin
 VBASIM             = open /Users/mariezimmy/CS2261/visualboyadvance-m.app
