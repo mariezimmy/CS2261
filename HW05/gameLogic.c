@@ -197,8 +197,6 @@ void updateBullets(ANISPRITE* b) {
         b->row += b->rdel;
         if ((b->row + b->height) == 0) {
             b->active = 0;
-        } else if {
-            // add bullet alien collision logic
         }
     }
 }
@@ -211,7 +209,7 @@ void fireBullet() {
     for (int i = 0; i < BULLETCOUNT; i++) {
         if (bullets[i].active == 0) {
             bullets[i].row = player.row;
-            bullets[i].col = player.col + (player.width / 2);
+            bullets[i].col = player.col;
             bullets[i].active = 1;
             break;
         }
