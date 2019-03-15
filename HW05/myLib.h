@@ -176,29 +176,6 @@ void hideSprites();
 #define ROWMASK 0xFF
 #define COLMASK 0x1FF
 
-// generic struct for animated sprite
-// note: animation sprite variables are as followed:
-// aniCounter: used to count how many frames have passed
-// curFrame: which frame of animation sprite is in (row in spritesheet)
-// numFrames: the total number of frames
-// aniState: which state of animation sprite is in (column in spritesheet)
-typedef struct {
-    int screenRow;
-    int screenCol;
-    int worldRow;
-    int worldCol;
-    int rdel;
-    int cdel;
-    int width;
-    int height;
-    int aniCounter;
-    int aniState;
-    int prevAniState;
-    int curFrame;
-    int numFrames;
-    int hide;
-} ANISPRITE;
-
 // =================================== DMA ====================================
 
 // DMA struct

@@ -4,6 +4,7 @@
 #include "loseStateImage.h"
 #include "myLib.h"
 #include "pauseStateImage.h"
+#include "spriteSheet.h"
 #include "startStateImage.h"
 #include "winStateImage.h"
 
@@ -78,31 +79,6 @@ void drawHorizontalLine4(int row, int col, int length, u8 colorIndex) {
 
     for (int i = 0; i < length; i++) {
         setPixel4(row, col + i, colorIndex);
-    }
-}
-
-// helper function to draw string in mode 4
-void drawChar4(int row, int col, char ch, u8 colorIndex) {
-
-    for (int i = 0; i < 8; i++) {
-        for (int j = 0; j < 6; j++) {
-            if (fontdata_6x8[48 * ch + j + 6 * i]) {
-                setPixel4(row + i, col + j, colorIndex);
-            }
-        }
-    }
-}
-
-// this is for drawing strings in mode 4
-// remember to input charBuffer[41] = "someString";
-// so that way, we do not draw a string past the row length
-void drawString4(int row, int col, char *str, u8 colorIndex) {
-
-    int i = 0;
-    while (str[i] != '\0') {
-        drawChar4(row, col, str[i], colorIndex);
-        i++;
-        col += 6;
     }
 }
 

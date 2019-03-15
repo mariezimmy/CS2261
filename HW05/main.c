@@ -4,6 +4,7 @@
 #include "loseStateImage.h"
 #include "myLib.h"
 #include "pauseStateImage.h"
+#include "spriteSheet.h"
 #include "startStateImage.h"
 #include "winStateImage.h"
 
@@ -121,6 +122,8 @@ void gameState() {
     updateGame();
     drawGame();
     waitForVBlank();
+    DMANow(3, shadowOAM, OAM, 128 * 4);
+
     // press start to pause
     if (BUTTON_PRESSED(BUTTON_START)) {
         goToPause();
@@ -143,6 +146,7 @@ void goToGame() {
     DMANow(3, gameStateImageTiles, &CHARBLOCK[0], 4464);
     // load maps into screenblocks
     DMANow(3, gameStateImageMap, &SCREENBLOCK[28], 1024);
+    DMANow(3, shadowOAM, OAM, 128 * 4);
     state = GAME;
 }
 
