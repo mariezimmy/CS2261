@@ -24,7 +24,7 @@ typedef struct {
 // constants
 #define ALIENCOUNT 36
 #define BULLETCOUNT 3
-#define ALIENBULLETCOUNT 3
+#define ALIENBULLETCOUNT 1
 #define HEARTCOUNT 3
 #define PLAYERROW 140
 
@@ -56,7 +56,6 @@ void updatePlayer();
 // heart prototypes
 void initHearts();
 void drawHearts(ANISPRITE *);
-void updateHearts(ANISPRITE *);
 
 // bullet prototypes
 void initBullets();

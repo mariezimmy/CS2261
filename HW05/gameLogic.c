@@ -36,6 +36,7 @@ void initGame() {
     DMANow(3, spriteSheetTiles, &CHARBLOCK[4], 16384);
     aliensRemaining = ALIENCOUNT;
     heartsRemaining = HEARTCOUNT;
+    bottomAlienRow = 0;
     initAliens();
     initPlayer();
     initHearts();
@@ -79,11 +80,6 @@ void updateGame() {
         updateAliens(&aliens[i]);
     }
 
-    // update hearts
-    for (int j = 0; j < HEARTCOUNT; j++) {
-        updateHearts(&hearts[j]);
-    }
-
     // update bullets
     for (int k = 0; k < BULLETCOUNT; k++) {
         updateBullets(&bullets[k]);
@@ -99,8 +95,8 @@ void initAliens() {
 
     for (int i = 0; i < ALIENCOUNT; i++) {
         aliens[i].row = 20 + ((i / 6) * 16);
-        aliens[i].col = 62 + ((i % 6) * 20);
-        aliens[i].rdel = 1;
+        aliens[i].col = 62 + (((i + 1) % 6) * 20);
+        aliens[i].rdel = 2;
         aliens[i].cdel = 1;
         aliens[i].width = 16;
         aliens[i].height = 8;
@@ -160,7 +156,18 @@ void initBullets() {
 
 void initAlienBullets() {
 
-    // reference lab 04 for bullet code
+    for (int i = 0; i < ALIENBULLETCOUNT; i++) {
+        alienBullets[i].height = 8;
+        alienBullets[i].width = 1;
+        alienBullets[i].row = -1 * alienBullets[i].height;
+        alienBullets[i].rdel = 2;
+        alienBullets[i].cdel = 0;
+        alienBullets[i].aniState = 3;
+        alienBullets[i].curFrame = 3;
+        alienBullets[i].active = 0;
+        alienBullets[i].numFrames = 1;
+        alienBullets[i].index = i + 64;
+    }
 }
 
 void drawPlayer() {
@@ -203,7 +210,14 @@ void drawBullets(ANISPRITE* b) {
 }
 
 void drawAlienBullets(ANISPRITE* ab) {
-    // reference lab 04 for bullet code
+
+    if (ab->active) {
+        shadowOAM[64].attr0 = ab->row | ATTR0_SQUARE | ATTR0_4BPP;
+        shadowOAM[64].attr1 = ab->col | ATTR1_TINY;
+        shadowOAM[64].attr2 = ATTR2_TILEID((ab->curFrame), (ab->aniState)) | ATTR2_PALROW(0);
+    } else {
+        shadowOAM[64].attr0 = ATTR0_HIDE;
+    }
 }
 
 void updatePlayer(ANISPRITE* p) {
@@ -218,17 +232,88 @@ void updatePlayer(ANISPRITE* p) {
         p->col += p->cdel;
     }
 
+    // ensure player doesn't go out of bounds
+    if (p->col + p->width > SCREENWIDTH - 1) {
+        p->col = 239 - p->width;
+    }
+
+    if (p->col < 0) {
+        p->col = 0;
+    }
+
     // fire bullet
     if (BUTTON_PRESSED(BUTTON_A)) {
         fireBullet();
+    }
+
+    // handle alien bullet-player collisions
+    for (int i = 0; i < ALIENBULLETCOUNT; i++) {
+        if (alienBullets[i].active) {
+            if (collision(p->row, p->col, p->height, p->width,
+                alienBullets[i].row, alienBullets[i].col, alienBullets[i].height, alienBullets[i].width)) {
+                alienBullets[i].active = 0;
+                heartsRemaining--;
+                hearts[heartsRemaining].active = 0;
+                break;
+            }
+        }
     }
 }
 
 void updateAliens(ANISPRITE* a) {
 
-}
+    if (a->active) {
+        // move aliens to the right (or left) one
+        a->col += a->cdel;
 
-void updateHearts(ANISPRITE* h) {
+        // handle alien-wall collisions
+        if (a->col <= 0 || a->col + a->width >= SCREENWIDTH) {
+            a->col -= a->cdel;
+            // all aliens change direction and move down
+            for (int i = 0; i < ALIENCOUNT; i++) {
+                aliens[i].cdel *= -1;
+                aliens[i].row += aliens[i].rdel;
+            }
+            // update bottom alien row
+            for (int k = ALIENCOUNT - 1; k >= 0; k--) {
+                if (aliens[k].active) {
+                    bottomAlienRow = aliens[k].row + a->height;
+                    break;
+                }
+            }
+        }
+
+        // handle alien-bullet collisions
+        for (int j = 0; j < BULLETCOUNT; j++) {
+            if (bullets[j].active) {
+                if (collision(a->row, a->col, a->height, a->width,
+                    bullets[j].row, bullets[j].col, bullets[j].height, bullets[j].width)) {
+                    a->active = 0;
+                    aliensRemaining--;
+                    bullets[j].active = 0;
+                    break;
+                }
+            }
+        }
+
+        // animate aliens
+        if (a->aniCounter % 20 == 0) {
+            if (a->curFrame == 0) {
+                a->curFrame = 1;
+            } else {
+                a->curFrame = 0;
+            }
+        }
+        a->aniCounter++;
+
+        // make aliens fire bullets randomly
+        if (a->aniCounter % 320 == 0) {
+            int randIndex = rand();
+            if (aliens[randIndex % ALIENCOUNT].active) {
+                fireAlienBullet(&aliens[randIndex % ALIENCOUNT]);
+            }
+        }
+    }
 
 }
 
@@ -243,7 +328,13 @@ void updateBullets(ANISPRITE* b) {
 }
 
 void updateAlienBullets(ANISPRITE* ab) {
-    // reference lab 04 for bullet code
+
+    if (ab->active) {
+        ab->row += ab->rdel;
+        if (ab->row >= PLAYERROW) {
+            ab->active = 0;
+        }
+    }
 }
 
 void fireBullet() {
@@ -259,8 +350,16 @@ void fireBullet() {
 }
 
 void fireAlienBullet(ANISPRITE* a) {
-    // reference lab 04 for bullet code
-    // not the input is deciding which alien will fire the bullet
+
+    // fire alien bullet from a given alien row and column
+    for (int i = 0; i < ALIENBULLETCOUNT; i++) {
+        if (alienBullets[i].active == 0) {
+            alienBullets[i].row = a->row;
+            alienBullets[i].col = a->col;
+            alienBullets[i].active = 1;
+            break;
+        }
+    }
 }
 
 int collision(int rowA, int colA, int heightA, int widthA,
