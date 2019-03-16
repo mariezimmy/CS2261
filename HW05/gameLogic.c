@@ -104,7 +104,7 @@ void initAliens() {
         aliens[i].cdel = 1;
         aliens[i].width = 16;
         aliens[i].height = 8;
-        aliens[i].aniState = 2 * (i / 12);
+        aliens[i].aniState = (i / 12);
         aliens[i].curFrame = 0;
         aliens[i].active = 1;
         aliens[i].numFrames = 2;
@@ -116,7 +116,7 @@ void initAliens() {
 void initPlayer() {
 
     player.row = PLAYERROW;
-    player.col = SCREENWIDTH / 2;
+    player.col = (SCREENWIDTH / 2) - 8;
     player.rdel = 0;
     player.cdel = 1;
     player.width = 16;
@@ -175,7 +175,7 @@ void drawAliens(ANISPRITE* a) {
     if (a->active) {
         shadowOAM[a->index].attr0 = a->row | ATTR0_WIDE | ATTR0_4BPP;
         shadowOAM[a->index].attr1 = a->col | ATTR1_TINY;
-        shadowOAM[a->index].attr2 = ATTR2_TILEID((a->curFrame), (a->aniState)) | ATTR2_PALROW(0);
+        shadowOAM[a->index].attr2 = ATTR2_TILEID((a->curFrame), (a->aniState) * 2) | ATTR2_PALROW(0);
     } else {
         shadowOAM[a->index].attr0 = ATTR0_HIDE;
     }
