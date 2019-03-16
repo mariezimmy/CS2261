@@ -114,6 +114,7 @@ void goToStart() {
     // load maps into screenblocks
     DMANow(3, startStateImageMap, &SCREENBLOCK[28], 1024);
     hideSprites();
+    DMANow(3, shadowOAM, OAM, 128 * 4);
     waitForVBlank();
     state = START;
 }
@@ -170,6 +171,7 @@ void goToPause() {
     // load maps into screenblocks
     DMANow(3, pauseStateImageMap, &SCREENBLOCK[28], 1024);
     hideSprites();
+    DMANow(3, shadowOAM, OAM, 128 * 4);
     waitForVBlank();
     state = PAUSE;
 }
@@ -190,6 +192,7 @@ void goToWin() {
     // load maps into screenblocks
     DMANow(3, winStateImageMap, &SCREENBLOCK[28], 1024);
     hideSprites();
+    DMANow(3, shadowOAM, OAM, 128 * 4);
     waitForVBlank();
     state = WIN;
 }
@@ -210,6 +213,7 @@ void goToLose() {
     // load maps into screenblocks
     DMANow(3, loseStateImageMap, &SCREENBLOCK[28], 1024);
     hideSprites();
+    DMANow(3, shadowOAM, OAM, 128 * 4);
     waitForVBlank();
     state = LOSE;
 }

@@ -99,7 +99,7 @@ void initAliens() {
 
     for (int i = 0; i < ALIENCOUNT; i++) {
         aliens[i].row = 20 + ((i / 6) * 16);
-        aliens[i].col = 60 + ((i % 6) * 20);
+        aliens[i].col = 62 + ((i % 6) * 20);
         aliens[i].rdel = 1;
         aliens[i].cdel = 1;
         aliens[i].width = 16;
