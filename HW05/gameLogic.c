@@ -97,6 +97,20 @@ void updateGame() {
 
 void initAliens() {
 
+    for (int i = 0; i < ALIENCOUNT; i++) {
+        aliens[i].row = 20 + ((i / 6) * 16);
+        aliens[i].col = 60 + ((i % 6) * 20);
+        aliens[i].rdel = 1;
+        aliens[i].cdel = 1;
+        aliens[i].width = 16;
+        aliens[i].height = 8;
+        aliens[i].aniState = 2 * (i / 12);
+        aliens[i].curFrame = 0;
+        aliens[i].active = 1;
+        aliens[i].numFrames = 2;
+        aliens[i].index = i + 16;
+    }
+
 }
 
 void initPlayer() {
@@ -115,6 +129,17 @@ void initPlayer() {
 
 void initHearts() {
 
+    for (int i = 0; i < HEARTCOUNT; i++) {
+        hearts[i].row = 2;
+        hearts[i].col = SCREENWIDTH - (12 * (i + 1));
+        hearts[i].width = 8;
+        hearts[i].height = 8;
+        hearts[i].aniState = 2;
+        hearts[i].curFrame = 3;
+        hearts[i].active = 1;
+        hearts[i].numFrames = 1;
+        hearts[i].index = i + 2;
+    }
 }
 
 void initBullets() {
@@ -129,8 +154,8 @@ void initBullets() {
         bullets[i].curFrame = 3;
         bullets[i].active = 0;
         bullets[i].numFrames = 1;
+        bullets[i].index = i + 8;
     }
-
 }
 
 void initAlienBullets() {
@@ -139,6 +164,7 @@ void initAlienBullets() {
 }
 
 void drawPlayer() {
+
     shadowOAM[0].attr0 = player.row | ATTR0_WIDE | ATTR0_4BPP;
     shadowOAM[0].attr1 = player.col | ATTR1_TINY;
     shadowOAM[0].attr2 = ATTR2_TILEID((player.curFrame), (player.aniState) * 2) | ATTR2_PALROW(0);
@@ -146,20 +172,33 @@ void drawPlayer() {
 }
 
 void drawAliens(ANISPRITE* a) {
-
+    if (a->active) {
+        shadowOAM[a->index].attr0 = a->row | ATTR0_WIDE | ATTR0_4BPP;
+        shadowOAM[a->index].attr1 = a->col | ATTR1_TINY;
+        shadowOAM[a->index].attr2 = ATTR2_TILEID((a->curFrame), (a->aniState)) | ATTR2_PALROW(0);
+    } else {
+        shadowOAM[a->index].attr0 = ATTR0_HIDE;
+    }
 }
 
 void drawHearts(ANISPRITE* h) {
-
+    if (h->active) {
+        shadowOAM[h->index].attr0 = h->row | ATTR0_SQUARE | ATTR0_4BPP;
+        shadowOAM[h->index].attr1 = h->col | ATTR1_TINY;
+        shadowOAM[h->index].attr2 = ATTR2_TILEID((h->curFrame), (h->aniState)) | ATTR2_PALROW(0);
+    } else {
+        shadowOAM[h->index].attr0 = ATTR0_HIDE;
+    }
 }
 
 void drawBullets(ANISPRITE* b) {
+
     if (b->active) {
-        shadowOAM[1].attr0 = b->row | ATTR0_SQUARE | ATTR0_4BPP;
-        shadowOAM[1].attr1 = b->col | ATTR1_TINY;
-        shadowOAM[1].attr2 = ATTR2_TILEID((b->curFrame), (b->aniState)) | ATTR2_PALROW(0);
+        shadowOAM[b->index].attr0 = b->row | ATTR0_SQUARE | ATTR0_4BPP;
+        shadowOAM[b->index].attr1 = b->col | ATTR1_TINY;
+        shadowOAM[b->index].attr2 = ATTR2_TILEID((b->curFrame), (b->aniState)) | ATTR2_PALROW(0);
     } else {
-        shadowOAM[1].attr0 = ATTR0_HIDE;
+        shadowOAM[b->index].attr0 = ATTR0_HIDE;
     }
 }
 
@@ -168,6 +207,7 @@ void drawAlienBullets(ANISPRITE* ab) {
 }
 
 void updatePlayer(ANISPRITE* p) {
+
     // move left
     if (BUTTON_HELD(BUTTON_LEFT)) {
         p->col -= p->cdel;
@@ -179,7 +219,7 @@ void updatePlayer(ANISPRITE* p) {
     }
 
     // fire bullet
-    if (BUTTON_HELD(BUTTON_A)) {
+    if (BUTTON_PRESSED(BUTTON_A)) {
         fireBullet();
     }
 }
@@ -193,6 +233,7 @@ void updateHearts(ANISPRITE* h) {
 }
 
 void updateBullets(ANISPRITE* b) {
+
     if (b->active) {
         b->row += b->rdel;
         if ((b->row + b->height) == 0) {
@@ -206,6 +247,7 @@ void updateAlienBullets(ANISPRITE* ab) {
 }
 
 void fireBullet() {
+
     for (int i = 0; i < BULLETCOUNT; i++) {
         if (bullets[i].active == 0) {
             bullets[i].row = player.row;

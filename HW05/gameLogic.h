@@ -17,13 +17,14 @@ typedef struct {
     int prevAniState;
     int curFrame;
     int numFrames;
+    int index;
     int active;
 } ANISPRITE;
 
 // constants
-#define ALIENCOUNT 24
-#define BULLETCOUNT 5
-#define ALIENBULLETCOUNT 5
+#define ALIENCOUNT 36
+#define BULLETCOUNT 3
+#define ALIENBULLETCOUNT 3
 #define HEARTCOUNT 3
 #define PLAYERROW 140
 
